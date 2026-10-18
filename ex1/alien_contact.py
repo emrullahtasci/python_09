@@ -28,8 +28,6 @@ class AlienContact(BaseModel):
     message_received: str | None = Field(default=None, max_length=500)
     is_verified: bool = False
 
-    # mode="after": runs once every field above is already validated and
-    # converted, so self holds clean, correctly typed values.
     @model_validator(mode="after")
     def check_business_rules(self) -> "AlienContact":
         """Rules that involve several fields at once."""
@@ -45,7 +43,6 @@ class AlienContact(BaseModel):
             )
         if self.signal_strength > 7.0 and not self.message_received:
             raise ValueError("Strong signals (> 7.0) must include a message")
-        # The validator must give the model back, otherwise it is lost
         return self
 
 
@@ -101,8 +98,6 @@ def main() -> None:
         print(f"Unexpected error: {error}")
     print(separator)
 
-    # Every field is valid on its own, but telepathic contact with only
-    # 2 witnesses breaks a business rule checked by the model validator.
     try:
         AlienContact(
             contact_id="AC_2024_002",

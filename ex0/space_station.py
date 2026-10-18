@@ -12,18 +12,13 @@ class SpaceStation(BaseModel):
     when an instance is created and raises ValidationError on bad data.
     """
 
-    # min_length / max_length limit the number of characters of a string
     station_id: str = Field(min_length=3, max_length=10)
     name: str = Field(min_length=1, max_length=50)
-    # ge = greater or equal, le = less or equal
     crew_size: int = Field(ge=1, le=20)
     power_level: float = Field(ge=0.0, le=100.0)
     oxygen_level: float = Field(ge=0.0, le=100.0)
-    # A string like "2024-01-15T10:30:00" is converted to datetime
     last_maintenance: datetime
-    # Plain default value: the field becomes optional when creating
     is_operational: bool = True
-    # "str | None" means the field may be missing (None)
     notes: str | None = Field(default=None, max_length=200)
 
 
@@ -44,9 +39,6 @@ def main() -> None:
     print("Space Station Data Validation")
     print(separator)
 
-    # model_validate() builds the model from raw data such as a dict
-    # loaded from JSON. The timestamp is a string here on purpose:
-    # Pydantic converts it to a datetime object automatically.
     raw_station = {
         "station_id": "ISS001",
         "name": "International Space Station",
@@ -63,7 +55,6 @@ def main() -> None:
         print(f"Unexpected error: {error}")
     print(separator)
 
-    # crew_size is above the allowed maximum (le=20)
     try:
         SpaceStation(
             station_id="ISS002",
@@ -76,7 +67,6 @@ def main() -> None:
         print("ERROR: invalid station was accepted")
     except ValidationError as error:
         print("Expected validation error:")
-        # errors() returns one dict per failed field, "msg" is readable
         for detail in error.errors():
             print(detail["msg"])
 

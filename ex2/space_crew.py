@@ -41,7 +41,6 @@ class SpaceMission(BaseModel):
     destination: str = Field(min_length=3, max_length=50)
     launch_date: datetime
     duration_days: int = Field(ge=1, le=3650)
-    # On a list, min_length / max_length limit the number of items
     crew: list[CrewMember] = Field(min_length=1, max_length=12)
     mission_status: str = "planned"
     budget_millions: float = Field(ge=1.0, le=10000.0)
@@ -66,7 +65,6 @@ class SpaceMission(BaseModel):
                 member for member in self.crew
                 if member.years_experience >= 5
             ]
-            # At least half of the crew: experienced / crew >= 0.5
             if len(experienced) * 2 < len(self.crew):
                 raise ValueError(
                     "Long missions (> 365 days) need at least 50% "
@@ -140,7 +138,6 @@ def main() -> None:
         print(f"Unexpected error: {error}")
     print(separator)
 
-    # Same kind of mission, but nobody is a Commander or a Captain
     try:
         SpaceMission(
             mission_id="M2024_MOON",
