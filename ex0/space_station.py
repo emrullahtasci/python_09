@@ -1,17 +1,9 @@
-"""Exercise 0: Space Station Data - basic Pydantic models with Field."""
-
 from datetime import datetime
 
 from pydantic import BaseModel, Field, ValidationError
 
 
 class SpaceStation(BaseModel):
-    """Vital statistics reported by a space station.
-
-    Every constraint is declared with Field(...). Pydantic checks them all
-    when an instance is created and raises ValidationError on bad data.
-    """
-
     station_id: str = Field(min_length=3, max_length=10)
     name: str = Field(min_length=1, max_length=50)
     crew_size: int = Field(ge=1, le=20)
@@ -23,7 +15,6 @@ class SpaceStation(BaseModel):
 
 
 def display_station(station: SpaceStation) -> None:
-    """Print the station information in a readable way."""
     status = "Operational" if station.is_operational else "Offline"
     print(f"ID: {station.station_id}")
     print(f"Name: {station.name}")
@@ -34,7 +25,6 @@ def display_station(station: SpaceStation) -> None:
 
 
 def main() -> None:
-    """Create a valid station, then show how an invalid one is rejected."""
     separator = "=" * 40
     print("Space Station Data Validation")
     print(separator)

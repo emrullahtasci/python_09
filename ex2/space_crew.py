@@ -1,5 +1,3 @@
-"""Exercise 2: Space Crew Management - nested Pydantic models."""
-
 from datetime import datetime
 from enum import Enum
 
@@ -7,8 +5,6 @@ from pydantic import BaseModel, Field, ValidationError, model_validator
 
 
 class Rank(str, Enum):
-    """Crew ranks, from lowest to highest."""
-
     CADET = "cadet"
     OFFICER = "officer"
     LIEUTENANT = "lieutenant"
@@ -17,8 +13,6 @@ class Rank(str, Enum):
 
 
 class CrewMember(BaseModel):
-    """One member of a mission crew."""
-
     member_id: str = Field(min_length=3, max_length=10)
     name: str = Field(min_length=2, max_length=50)
     rank: Rank
@@ -29,13 +23,6 @@ class CrewMember(BaseModel):
 
 
 class SpaceMission(BaseModel):
-    """A mission and its crew.
-
-    crew is a list of CrewMember models: Pydantic validates each member
-    first. If one member is invalid, the whole mission is rejected and
-    the error location shows which one (e.g. crew.1.age).
-    """
-
     mission_id: str = Field(min_length=5, max_length=15)
     mission_name: str = Field(min_length=3, max_length=100)
     destination: str = Field(min_length=3, max_length=50)
@@ -47,7 +34,6 @@ class SpaceMission(BaseModel):
 
     @model_validator(mode="after")
     def check_safety_rules(self) -> "SpaceMission":
-        """Safety requirements that look at the whole crew."""
         if not self.mission_id.startswith("M"):
             raise ValueError("Mission ID must start with 'M'")
 
@@ -80,7 +66,6 @@ class SpaceMission(BaseModel):
 
 
 def error_messages(error: ValidationError) -> list[str]:
-    """Return clean messages, without Pydantic's "Value error, " prefix."""
     messages = []
     for detail in error.errors():
         ctx = detail.get("ctx", {})
@@ -92,7 +77,6 @@ def error_messages(error: ValidationError) -> list[str]:
 
 
 def display_mission(mission: SpaceMission) -> None:
-    """Print mission details and its crew list."""
     print(f"Mission: {mission.mission_name}")
     print(f"ID: {mission.mission_id}")
     print(f"Destination: {mission.destination}")
@@ -106,7 +90,6 @@ def display_mission(mission: SpaceMission) -> None:
 
 
 def main() -> None:
-    """Show a valid mission and one that fails the safety rules."""
     separator = "=" * 41
     print("Space Mission Crew Validation")
     print(separator)

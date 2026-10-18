@@ -1,5 +1,3 @@
-"""Exercise 1: Alien Contact Logs - custom rules with @model_validator."""
-
 from datetime import datetime
 from enum import Enum
 
@@ -7,8 +5,6 @@ from pydantic import BaseModel, Field, ValidationError, model_validator
 
 
 class ContactType(str, Enum):
-    """Allowed kinds of contact. Any other value is rejected."""
-
     RADIO = "radio"
     VISUAL = "visual"
     PHYSICAL = "physical"
@@ -16,8 +12,6 @@ class ContactType(str, Enum):
 
 
 class AlienContact(BaseModel):
-    """A single alien contact report."""
-
     contact_id: str = Field(min_length=5, max_length=15)
     timestamp: datetime
     location: str = Field(min_length=3, max_length=100)
@@ -30,7 +24,6 @@ class AlienContact(BaseModel):
 
     @model_validator(mode="after")
     def check_business_rules(self) -> "AlienContact":
-        """Rules that involve several fields at once."""
         if not self.contact_id.startswith("AC"):
             raise ValueError("Contact ID must start with 'AC'")
         if (self.contact_type == ContactType.PHYSICAL
@@ -47,12 +40,6 @@ class AlienContact(BaseModel):
 
 
 def error_messages(error: ValidationError) -> list[str]:
-    """Return clean messages from a ValidationError.
-
-    For a ValueError raised in a validator, Pydantic prefixes the message
-    with "Value error, ". The original exception is kept in ctx["error"],
-    so we print that one instead.
-    """
     messages = []
     for detail in error.errors():
         ctx = detail.get("ctx", {})
@@ -64,7 +51,6 @@ def error_messages(error: ValidationError) -> list[str]:
 
 
 def display_contact(contact: AlienContact) -> None:
-    """Print a contact report."""
     print(f"ID: {contact.contact_id}")
     print(f"Type: {contact.contact_type.value}")
     print(f"Location: {contact.location}")
@@ -76,7 +62,6 @@ def display_contact(contact: AlienContact) -> None:
 
 
 def main() -> None:
-    """Show one valid report and one report breaking a business rule."""
     separator = "=" * 38
     print("Alien Contact Log Validation")
     print(separator)
